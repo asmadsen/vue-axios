@@ -1,0 +1,9 @@
+{
+  "name": "@asmadsen/vue-axios",
+  "version": "1.0.0",
+  "description": "Vue wrapper for Axios with error catching and authentication",
+  "main": "dist/index.js",
+  "repository": "https://github.com/asmadsen/vue-axios",
+  "author": "Andreas Storesund Maden <git@asmadsen.no>",
+  "license": "MIT"
+}
