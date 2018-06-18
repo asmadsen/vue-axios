@@ -1,5 +1,6 @@
 import axios, {AxiosError, AxiosInstance, AxiosPromise, AxiosRequestConfig, AxiosResponse} from 'axios'
-import VueAxios from '@/index'
+import VueAxios from './index'
+import {Store} from 'vuex'
 
 class AxiosWrapper {
 	Axios: AxiosInstance
@@ -47,7 +48,7 @@ class AxiosWrapper {
 		return Promise.reject(error)
 	}
 
-	get store() {
+	get store() : Store<any> | undefined {
 		return this.VueAxios.store
 	}
 
@@ -109,7 +110,7 @@ declare interface ErrorsHandler {
 }
 
 
-class AxiosRequestChain {
+export class AxiosRequestChain {
 	private axios: AxiosInstance
 	private VueAxios: VueAxios
 	private requestOptions: RequestOptions = {

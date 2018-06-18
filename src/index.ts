@@ -1,15 +1,8 @@
-import {CreateElement, Vue, VueConstructor} from 'vue/types/vue'
-import AxiosWrapper from '@/AxiosWrapper'
-import VuexAxiosPlugin from '@/VuexAxiosPlugin'
+import {Vue, VueConstructor} from 'vue/types/vue'
+import AxiosWrapper from './AxiosWrapper'
+import VuexAxiosPlugin from './VuexAxiosPlugin'
 import {Store} from 'vuex'
-import {
-	ComponentOptions,
-	DefaultComputed,
-	DefaultData,
-	DefaultMethods,
-	DefaultProps,
-	PropsDefinition,
-} from 'vue/types/options'
+import {ComponentOptions} from 'vue/types/options'
 
 declare module 'vue/types/vue' {
 	interface Vue {
@@ -20,11 +13,11 @@ declare module 'vue/types/vue' {
 
 declare module 'vue/types/options' {
 	interface ComponentOptions<V extends Vue,
-		Data=DefaultData<V>,
-		Methods=DefaultMethods<V>,
-		Computed=DefaultComputed,
-		PropsDef=PropsDefinition<DefaultProps>,
-		Props=DefaultProps> {
+		Data,
+		Methods,
+		Computed,
+		PropsDef,
+		Props> {
 		axios?: VueAxios
 	}
 }
