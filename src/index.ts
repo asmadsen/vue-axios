@@ -34,6 +34,7 @@ class VueAxios {
 	}
 
 	private static installed = false
+	private _initialized = false
 
 	constructor() {
 		this.initialized = new Promise<any>((resolve, reject) => {
@@ -60,11 +61,15 @@ class VueAxios {
 	}
 
 	init(Vue, store) {
+		if (this._initialized) {
+			return
+		}
 		Vue.prototype.$axios = this.Axios
 		if (store) {
 			this.store = store
 			this.initializeVuex(store)
 			this.initializedResolve()
+			this._initialized = true
 		} else {
 			this.initializedReject('Couldn\'t find $store on Vue prototype within 1000 ms, Vuex should be instantiated')
 		}
