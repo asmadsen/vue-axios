@@ -1,9 +1,9 @@
 {
   "name": "@asmadsen/vue-axios",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Vue wrapper for Axios with error catching and authentication",
   "main": "dist/index.common.js",
-  "types": "dist/index.d.ts",
+  "types": "types/index.d.ts",
   "repository": "https://github.com/asmadsen/vue-axios",
   "author": "Andreas Storesund Maden <git@asmadsen.no>",
   "license": "MIT",
