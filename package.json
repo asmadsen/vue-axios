@@ -1,6 +1,6 @@
 {
   "name": "@asmadsen/vue-axios",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Vue wrapper for Axios with error catching and authentication",
   "main": "dist/index.common.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,7 @@
   "author": "Andreas Storesund Maden <git@asmadsen.no>",
   "license": "MIT",
   "scripts": {
-    "build": "vue-cli-service build --target lib --name index ./src/index.ts && tsc -p . --emitDeclarationOnly",
+    "build": "vue-cli-service build --target lib --name index ./src/index.ts && tsc -p ./tsconfig.build.json --emitDeclarationOnly",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit",
     "prepublishOnly": "yarn build"
