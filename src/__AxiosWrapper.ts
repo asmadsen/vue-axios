@@ -1,6 +1,7 @@
 import axios, {AxiosError, AxiosInstance, AxiosPromise, AxiosRequestConfig, AxiosResponse} from 'axios'
 import VueAxios from './index'
 import {Store} from 'vuex'
+import ResponsePromise from './ResponsePromise'
 
 class AxiosWrapper {
 	Axios: AxiosInstance
@@ -48,7 +49,7 @@ class AxiosWrapper {
 		return Promise.reject(error)
 	}
 
-	get store() : Store<any> | undefined {
+	get store(): Store<any> | undefined {
 		return this.VueAxios.store
 	}
 
@@ -192,13 +193,16 @@ export class AxiosRequestChain {
 	}
 
 	request<T = any>(config: AxiosRequestConfig): AxiosPromise<T> {
-		return this.axios.request({
-			...config
-		})
+		return ResponsePromise
+			.transform(
+				this.axios.request({
+					...config
+				})
+			)
 			.then(response => {
 				const errors = [
-					...(response.data.errors || []),
-					...([(response.data.error || null)].filter(e => e !== null))
+					...(response.data && response.data.errors || []),
+					...([(response.data && response.data.error || null)].filter(e => e !== null))
 				]
 				if (errors && errors.length > 0) {
 					return new Promise((resolve, reject) => {
@@ -211,8 +215,11 @@ export class AxiosRequestChain {
 				}
 				return response
 			})
-			.catch(error => {
-				let errors: Array<any> = error.response.data.errors
+			.catch((error): any => {
+				let errors = [
+					...(error.response.data && error.response.data.errors || []),
+					...([(error.response.data && error.response.data.error || null)].filter(e => e !== null))
+				]
 				if (errors.length > 0) {
 					this.requestOptions.errorHandlers.map(options => {
 						let filteredErrors = [...errors]
@@ -236,6 +243,7 @@ export class AxiosRequestChain {
 								...(errors.filter(error => filteredErrors.indexOf(error) === -1)),
 							]
 						} catch (unhandledErrors) {
+							console.log(unhandledErrors)
 							if (unhandledErrors instanceof Array !== true) {
 								unhandledErrors = [unhandledErrors]
 							}
@@ -249,7 +257,7 @@ export class AxiosRequestChain {
 				if (errors.length > 0) {
 					this.VueAxios.errorHandler(errors, error)
 				}
-				return error
+				return Promise.reject(error)
 			})
 	}
 }
