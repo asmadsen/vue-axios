@@ -1,63 +1,30 @@
-import {Vue, VueConstructor} from 'vue/types/vue'
-import AxiosWrapper from './AxiosWrapper'
-import VuexAxiosPlugin from './VuexAxiosPlugin'
 import {Store} from 'vuex'
-import {ComponentOptions} from 'vue/types/options'
+import VueAxiosInterface from './VueAxiosInterface'
+import Mixin from './Mixin'
+import {AxiosRequestConfig} from 'axios'
+import HandlerManager from './HandlerManager'
 
-declare module 'vue/types/vue' {
-	interface Vue {
-		$axios: any,
-		__$axiosInstance: any
-	}
-}
+import './vue'
+import './axios'
 
-declare module 'vue/types/options' {
-	interface ComponentOptions<V extends Vue,
-		Data,
-		Methods,
-		Computed,
-		PropsDef,
-		Props> {
-		axios?: VueAxios
-	}
-}
-
-class VueAxios {
-	private static _instance: VueAxios
-	VuexPlugin: VuexAxiosPlugin
-	Axios: AxiosWrapper
+export default class VueAxios {
+	Axios: VueAxiosInterface
 	store: Store<any> | undefined
 	initialized: Promise<any>
 	private initializedResolve: (() => void) = () => undefined
 	private initializedReject: ((error?: any) => void) = () => undefined
-	private _errorHandler: (unhandledErrors?: Array<any>, context?: any) => void = () => {
-	}
+	errorHandler: HandlerManager<(unhandledErrors?: Array<any>, context?: any) => void> = new HandlerManager()
+	authentication: HandlerManager<(request: AxiosRequestConfig, context?: any) => AxiosRequestConfig | Promise<AxiosRequestConfig>> = new HandlerManager()
 
 	private static installed = false
 	private _initialized = false
 
-	constructor() {
+	constructor(config: AxiosRequestConfig = {}) {
 		this.initialized = new Promise<any>((resolve, reject) => {
 			this.initializedResolve = resolve
 			this.initializedReject = reject
 		})
-		this.VuexPlugin = new VuexAxiosPlugin()
-		this.Axios = new AxiosWrapper(this)
-	}
-
-	static get instance() {
-		if (!this._instance) {
-			this._instance = new this
-		}
-		return this._instance
-	}
-
-	static resetInstance() {
-		this._instance = new this
-	}
-
-	private initializeVuex(store: Store<any>) {
-		this.VuexPlugin.install(store)
+		this.Axios = new VueAxiosInterface(this, config)
 	}
 
 	init(Vue, store) {
@@ -67,56 +34,10 @@ class VueAxios {
 		Vue.prototype.$axios = this.Axios
 		if (store) {
 			this.store = store
-			this.initializeVuex(store)
-			this.initializedResolve()
-			this._initialized = true
-		} else {
-			this.initializedReject('Couldn\'t find $store on Vue prototype within 1000 ms, Vuex should be instantiated')
 		}
+		this.initializedResolve()
+		this._initialized = true
 	}
 
-	static install(Vue: VueConstructor, options: any) {
-		if (this.installed && Vue) {
-			return
-		}
-		Vue.mixin({
-			beforeCreate() {
-				const {axios, store, parent} = this.$options
-
-				let instance: VueAxios | null = null
-
-
-				if (axios) {
-					instance = axios
-				} else if (parent) {
-					instance = parent.__$axiosInstance
-				}
-
-				if (instance) {
-					if (axios) {
-						instance.init(Vue, store)
-					} else if (parent) {
-						instance.init(Vue, parent.$store)
-					}
-
-					this.__$axiosInstance = instance
-				}
-			}
-		})
-		this.installed = true
-	}
-
-	defaults = {
-		errorHandler: {
-			use: (handler: (unhandledErrors?: Array<any>, context?: any) => void) => {
-				this._errorHandler = handler
-			}
-		}
-	}
-
-	errorHandler(unhandledErrors, context) {
-		this._errorHandler(unhandledErrors, context)
-	}
+	static install = Mixin
 }
-
-export default VueAxios

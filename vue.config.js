@@ -1,5 +1,5 @@
 module.exports = {
-  lintOnSave: false,
+	lintOnSave: false,
 	configureWebpack: {
 		output: {
 			libraryExport: 'default'

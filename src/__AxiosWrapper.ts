@@ -3,7 +3,7 @@ import VueAxios from './index'
 import {Store} from 'vuex'
 import ResponsePromise from './ResponsePromise'
 
-class AxiosWrapper {
+class __AxiosWrapper {
 	Axios: AxiosInstance
 	VueAxios: VueAxios
 	private requestInterceptorId: number | null = null
@@ -255,11 +255,11 @@ export class AxiosRequestChain {
 					})
 				}
 				if (errors.length > 0) {
-					this.VueAxios.errorHandler(errors, error)
+					//this.VueAxios.errorHandler(errors, error)
 				}
 				return Promise.reject(error)
 			})
 	}
 }
 
-export default AxiosWrapper
+export default __AxiosWrapper

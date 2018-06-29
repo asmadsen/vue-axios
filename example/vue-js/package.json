@@ -1,0 +1,33 @@
+{
+  "name": "vue-js",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "preinstall": "(cd ../../ && yarn run build)",
+    "postinstall": "rm -rf ./node_modules/@asmadsen/vue-axios/example",
+    "loadpackage": "yarn run preinstall && yarn upgrade @asmadsen/vue-axios && yarn run postinstall"
+  },
+  "dependencies": {
+    "@asmadsen/vue-axios": "file:../..",
+    "vue": "^2.5.16",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.0.0-beta.15",
+    "@vue/cli-plugin-eslint": "^3.0.0-beta.15",
+    "@vue/cli-service": "^3.0.0-beta.15",
+    "@vue/eslint-config-standard": "^3.0.0-rc.3",
+    "node-sass": "^4.9.0",
+    "sass": "^1.6.1",
+    "sass-loader": "^7.0.3",
+    "vue-template-compiler": "^2.5.16"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}

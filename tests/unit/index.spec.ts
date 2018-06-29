@@ -1,62 +1,49 @@
 import {createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
-import VueAxios from '@/index'
+import VueAxios from '../../src/index'
 import {VueConstructor} from 'vue/types/vue'
-import AxiosWrapper from '@/AxiosWrapper'
+import VueAxiosInterface from '../../src/VueAxiosInterface'
 
 describe('Index', () => {
-	let vue: VueConstructor
-	let instance: VueAxios
+	let Vue: VueConstructor
+	let vueAxios: VueAxios
 
 	beforeEach(() => {
-		vue = createLocalVue()
-		instance = VueAxios.instance
+		Vue = createLocalVue()
+		vueAxios = new VueAxios()
+		Vue.use(VueAxios)
 	})
 
-	afterEach(() => {
-		VueAxios.resetInstance()
-	})
-
-	it('Can be registered successfully', () => {
-		vue.use(Vuex)
+	it('should register plugin', () => {
+		Vue.use(Vuex)
 		const store = new Vuex.Store({})
-		vue.use(VueAxios)
-		const i = new vue({
+		const vue = new Vue({
 			store,
-			axios: instance
+			vueAxios
 		})
-		return instance.initialized
-			.catch(a => {
-			})
-			.finally(() => {
-				expect(i.$axios).toBeInstanceOf(AxiosWrapper)
-				expect(instance.store).toBeInstanceOf(Vuex.Store)
-			})
-	})
-
-	it('Will thow error if Vuex is not initialized', () => {
-		vue.use(VueAxios)
-		const i = new vue({
-			axios: instance
-		})
-		return instance.initialized.catch(error => {
-			expect(error).toEqual('Couldn\'t find $store on Vue prototype within 1000 ms, Vuex should be instantiated')
+		return vueAxios.initialized.finally(() => {
+			expect(vue.$axios).toBeInstanceOf(VueAxiosInterface)
+			expect(vueAxios.store).toBeInstanceOf(Vuex.Store)
 		})
 	})
 
-	it('Registered Vuex plugin', () => {
-		vue.use(Vuex)
+	it('should be accesible in sub-components', done => {
+		Vue.use(Vuex)
 		const store = new Vuex.Store({})
-		vue.use(VueAxios)
-		const i = new vue({
-			store,
-			axios: instance
+		const App = Vue.component('App', {
+			created() {
+				expect(this.$axios).toBeInstanceOf(VueAxiosInterface)
+				done()
+			},
+			render: r => r('div')
 		})
-		expect(i.$store['_modules'].root._children).toHaveProperty('authentication')
-		expect(i.$store).toBeInstanceOf(Vuex.Store)
-		return instance.initialized
-			.then(() => {
-				expect(instance.store).toBeInstanceOf(Vuex.Store)
-			})
+		const vue = new Vue({
+			store,
+			vueAxios,
+			components: {
+				App
+			},
+			render: r => r(App)
+		}).$mount()
 	})
 })

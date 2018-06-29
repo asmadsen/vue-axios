@@ -1,24 +1,24 @@
 import {createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
-import VueAxios from '@/index'
+import VueAxios from '../../src/index'
 import moxios from 'moxios'
 
 
-describe('AxiosWrapper', () => {
+describe.skip('AxiosWrapper', () => {
 	let vue
 	let store
 	let vueAxios
 
 	beforeEach(() => {
-		VueAxios.resetInstance()
+		//VueAxios.resetInstance()
 		const Vue = createLocalVue()
-		vueAxios = VueAxios.instance
+		//vueAxios = VueAxios.instance
 		Vue.use(Vuex)
 		store = new Vuex.Store({})
 		Vue.use(VueAxios)
 		vue = new Vue({
 			store,
-			axios: vueAxios
+			vueAxios
 		})
 	})
 
@@ -48,14 +48,14 @@ describe('AxiosWrapper', () => {
 				results
 					.forEach(result => {
 						expect(result).toEqual(true)
-				})
+					})
 				moxios.uninstall(vueAxios.Axios.Axios)
 			})
 	})
 
 
 	describe('Errorhandlers', () => {
-		it('Generic handler', () => {
+		it('Generic handler', (done) => {
 			moxios.install(vueAxios.Axios.Axios)
 			const errors = [
 				{
@@ -83,7 +83,7 @@ describe('AxiosWrapper', () => {
 			const mock2 = jest.fn(errors => {
 				return Promise.reject(errors[3])
 			})
-			return vue.$axios
+			vue.$axios
 				.handle(mock, 'InputValidation')
 				.handle(mock2)
 				.get('/url')
@@ -100,6 +100,7 @@ describe('AxiosWrapper', () => {
 					]))
 					expect(mock2).toHaveBeenCalledWith(expect.arrayContaining(errors))
 					moxios.uninstall(vueAxios.Axios.Axios)
+					done()
 				})
 		})
 
@@ -140,6 +141,23 @@ describe('AxiosWrapper', () => {
 						message: 'Some some some some'
 					})
 					expect(errorMock).toHaveBeenCalled()
+					moxios.uninstall(vueAxios.Axios.Axios)
+				})
+		})
+
+		it('4xx and 5xx status codes gets converted to errors', () => {
+			const errorMock = jest.fn()
+			vueAxios.defaults.errorHandler.use(errorMock)
+			moxios.install(vueAxios.Axios.Axios)
+			moxios.stubOnce('get', '/url', {
+				status: 400
+			})
+			return vue.$axios
+				.get('/url')
+				.catch(error => {
+					console.log(error)
+				})
+				.finally(() => {
 					moxios.uninstall(vueAxios.Axios.Axios)
 				})
 		})

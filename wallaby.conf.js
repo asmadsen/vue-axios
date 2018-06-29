@@ -1,7 +1,7 @@
 module.exports = wallaby => {
 
 	return {
-		files: ['src/**/*', 'jest.config.js', 'package.json', 'tsconfig.json'],
+		files: ['src/**/*', 'jest.config.js', 'package.json', 'tsconfig.json', '!src/**/__*'],
 
 		tests: ['tests/**/*.spec.ts'],
 
@@ -18,7 +18,8 @@ module.exports = wallaby => {
 					compact: false,
 					filename: file.path,
 					presets: ['babel-preset-env', 'babel-preset-stage-2'],
-					plugins: ['transform-es2015-modules-commonjs', 'transform-runtime']})
+					plugins: ['transform-es2015-modules-commonjs', 'transform-runtime']
+				})
 		},
 
 		setup(wallaby) {
