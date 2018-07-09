@@ -1,6 +1,6 @@
 {
   "name": "@asmadsen/vue-axios",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "scripts": {
     "build": "rimraf dist && tsc --project tsconfig.json",
     "lint": "vue-cli-service lint",
