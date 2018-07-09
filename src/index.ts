@@ -2,13 +2,14 @@ import {Store} from 'vuex'
 import VueAxiosInterface from './VueAxiosInterface'
 import Mixin from './Mixin'
 import {AxiosRequestConfig} from 'axios'
+import axios from 'axios'
 import HandlerManager from './HandlerManager'
 
 import './vue'
 import './axios'
 
 export default class VueAxios {
-	Axios: VueAxiosInterface
+	Axios: VueAxiosInterface<any>
 	store: Store<any> | undefined
 	initialized: Promise<any>
 	private initializedResolve: (() => void) = () => undefined
@@ -24,7 +25,7 @@ export default class VueAxios {
 			this.initializedResolve = resolve
 			this.initializedReject = reject
 		})
-		this.Axios = new VueAxiosInterface(this, config)
+		this.Axios = new VueAxiosInterface(axios.create({...config}), this, {...config})
 	}
 
 	init(Vue, store) {
