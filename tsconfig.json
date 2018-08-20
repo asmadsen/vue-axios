@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+	"declaration":            true,
+	"stripInternal":          true,
+	"emitDecoratorMetadata":  true,
+	"experimentalDecorators": true,
+	"moduleResolution":       "node",
+	"noEmitOnError":          false,
+	"lib":                    [
+	  "es2015",
+	  "dom",
+	  "dom.iterable",
+	  "scripthost",
+	  "es2018.promise",
+	  "es2017.object"
+	],
+	"types":                        [
+	  "node",
+	  "jest"
+	],
+	"skipLibCheck":           true,
+	"outDir":                 "./dist",
+	"rootDir":                "./src",
+	"pretty":                 true,
+	"target":                       "esnext",
+	"module":                       "esnext",
+	"strict":                       true,
+	"jsx":                          "preserve",
+	"importHelpers":                true,
+	"allowSyntheticDefaultImports": true,
+	"sourceMap":                    true,
+	"noImplicitAny":                false,
+	"baseUrl":                      ".",
+	"noImplicitThis": true,
+	"paths": {
+	  "@/*": [
+		"src/*"
+	  ]
+	}
+  },
+  "include":         [
+	"src/**/*"
+  ],
+  "exclude":         [
+	"**/*.spec.ts",
+	"**/*.test.ts",
+	"node_modules",
+	"typings",
+	"typings/index.d.ts"
+  ]
+}

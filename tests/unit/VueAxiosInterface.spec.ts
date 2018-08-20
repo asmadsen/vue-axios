@@ -1,6 +1,6 @@
 import {createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
-import VueAxios from '../../src'
+import VueAxios from '../../src/index'
 import moxios from 'moxios'
 import VueAxiosInterface from '../../src/VueAxiosInterface'
 

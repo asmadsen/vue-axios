@@ -208,4 +208,24 @@ describe('Interface', () => {
 			]
 		})
 	})
+
+	it('response should be type any', () => {
+		moxios.stubOnce('get', '/get', {
+			status: 200,
+			response: {
+				data: [
+					'a',
+					'b',
+					'c'
+				]
+			}
+		})
+
+		return vueAxios.Axios
+			.get('/get')
+			.then(response => response.data.data)
+			.then(data => {
+				expect(data).toEqual(expect.arrayContaining(['a', 'b', 'c']))
+			})
+	})
 })

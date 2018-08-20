@@ -3,7 +3,7 @@ const setTimeoutFunc = setTimeout
 function noop() {
 }
 
-export default class ResponsePromise implements Promise<any> {
+export default class ResponsePromise<T = any> implements Promise<T> {
 	'constructor': typeof ResponsePromise
 	readonly [Symbol.toStringTag]: 'Promise'
 	static readonly [Symbol.toStringTag]: 'Promise'
@@ -113,12 +113,12 @@ export default class ResponsePromise implements Promise<any> {
 	}
 
 
-	catch<TResult>(onrejected?: ((reason: any) => (PromiseLike<TResult> | TResult)) | null | undefined): Promise<any> {
+	catch<TResult = never>(onrejected?: ((reason: any) => (PromiseLike<TResult> | TResult)) | null | undefined): ResponsePromise<any> {
 		return this.then(null, onrejected)
 	}
 
-	finally<U>(onFinally?: () => (PromiseLike<U> | U)): Promise<any>
-	finally(onFinally?: (() => void) | null | undefined): Promise<any>
+	finally<U>(onFinally?: () => (PromiseLike<U> | U)): ResponsePromise<any>
+	finally(onFinally?: (() => void) | null | undefined): ResponsePromise<any>
 	finally(onFinally?): Promise<any> {
 		const constructor = this.constructor
 		return this.then(
@@ -127,7 +127,7 @@ export default class ResponsePromise implements Promise<any> {
 		)
 	}
 
-	then<TResult1, TResult2>(onfulfilled?: ((value: any) => (PromiseLike<TResult1> | TResult1)) | null | undefined, onrejected?: ((reason: any) => (PromiseLike<TResult2> | TResult2)) | null | undefined): Promise<TResult1 | TResult2> {
+	then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: any) => (PromiseLike<TResult1> | TResult1)) | null | undefined, onrejected?: ((reason: any) => (PromiseLike<TResult2> | TResult2)) | null | undefined): ResponsePromise<TResult1 | TResult2> {
 		const prom = new this.constructor(noop)
 
 		this.handle(new Handler(onfulfilled, onrejected, prom))
@@ -150,7 +150,7 @@ export default class ResponsePromise implements Promise<any> {
 		})
 	}
 
-	static transform(value) {
+	static transform<T = any>(value) : ResponsePromise<T> {
 		if (value && typeof value === 'object' && value instanceof Promise) {
 			return new ResponsePromise((resolve, reject) => {
 				value.then(resolve, reject)

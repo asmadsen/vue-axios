@@ -1,14 +1,9 @@
 import VueAxios from './index'
 import {Store} from 'vuex'
-import axios, {AxiosError, AxiosRequestConfig} from 'axios'
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig} from 'axios'
 import RequestHandlerOptions from './RequestHandlerOptions'
 
-export default class VueAxiosInterface extends RequestHandlerOptions {
-	constructor(vueAxios: VueAxios, config: AxiosRequestConfig = {}) {
-		const Axios = axios.create(Object.assign({}, config))
-		super(Axios, vueAxios, config)
-	}
-
+export default class VueAxiosInterface<T = any> extends RequestHandlerOptions<T> {
 	get store(): Store<any> {
 		return <Store<any>> this.VueAxios.store
 	}

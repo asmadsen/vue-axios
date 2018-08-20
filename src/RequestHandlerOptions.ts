@@ -14,11 +14,11 @@ export declare interface ErrorsHandler {
 	handler: (error: any, context: AxiosError) => Promise<any> | any | void
 }
 
-export default class RequestHandlerOptions extends Request {
+export default class RequestHandlerOptions<T = any> extends Request<T> {
 	protected handlers: Array<ErrorHandler | ErrorsHandler> = []
 
-	request<T>(config: AxiosRequestConfig): AxiosPromise<T> {
-		return new ResponsePromise((resolve, reject) => {
+	request<T = any>(config: AxiosRequestConfig): AxiosPromise<T> {
+		return new ResponsePromise<T>((resolve, reject) => {
 			super.request(config)
 				.then(
 					response => {

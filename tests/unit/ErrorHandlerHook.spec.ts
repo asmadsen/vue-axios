@@ -1,5 +1,5 @@
 import {createLocalVue} from '@vue/test-utils'
-import VueAxios from '../../src'
+import VueAxios from '../../src/index'
 import moxios from 'moxios'
 
 describe('Error handler hook', () => {

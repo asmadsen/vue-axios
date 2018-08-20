@@ -1,6 +1,6 @@
 import RequestHandlerOptions from '../../src/RequestHandlerOptions'
 import Axios from 'axios'
-import VueAxios from '../../src'
+import VueAxios from '../../src/index'
 
 describe('Request handler options', () => {
 	it('should have handler function', () => {

@@ -1,7 +1,7 @@
 import moxios from 'moxios'
 import {createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
-import VueAxios from '../../src'
+import VueAxios from '../../src/index'
 import VueAxiosInterface from '../../src/VueAxiosInterface'
 
 describe('Authentication Hook', () => {
@@ -28,14 +28,39 @@ describe('Authentication Hook', () => {
 	})
 
 	it('should register authentication hook', () => {
-		const authenticationHook = jest.fn((request, {axios, store}) => {
+		const authenticationHook = (request, {axios, store}) => {
 			expect(axios).toBeInstanceOf(VueAxiosInterface)
 			expect(store).toBeInstanceOf(Vuex.Store)
+			return Promise.resolve(request)
+		}
+		vueAxios.authentication.use(authenticationHook)
+
+		moxios.stubOnce('get', '/', {
+			status: 200,
+		})
+
+		return vueAxios
+			.initialized
+			.finally(() => {
+				return vue.$axios
+					.authenticate()
+					.get('/')
+					.then(() => {
+					})
+			})
+	})
+
+	it('authenticate or unathenticate should only apply to current request', (done) => {
+		const authenticationHook = jest.fn((request, {axios, store}) => {
 			return Promise.resolve(request)
 		})
 		vueAxios.authentication.use(authenticationHook)
 
 		moxios.stubOnce('get', '/', {
+			status: 200,
+		})
+
+		moxios.stubOnce('get', '/after', {
 			status: 200,
 		})
 
@@ -50,6 +75,12 @@ describe('Authentication Hook', () => {
 							expect.objectContaining({url: '/', method: 'get'}),
 							expect.anything()
 						)
+						return vue.$axios
+							.get('/after')
+							.then(response => {
+								expect(response.request.authenticate).not.toBeDefined()
+								done()
+							})
 					})
 			})
 	})

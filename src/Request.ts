@@ -1,10 +1,11 @@
 import VueAxios from './index'
 import {AxiosInstance, AxiosPromise, AxiosRequestConfig} from 'axios'
 import ResponsePromise from './ResponsePromise'
+import axios from 'axios'
 
 const isAbsoluteURL = require('axios/lib/helpers/isAbsoluteURL.js')
 
-export default class Request {
+export default class Request<T = any> {
 	'constructor': typeof Request
 	protected Axios: AxiosInstance
 	protected VueAxios: VueAxios
@@ -13,17 +14,23 @@ export default class Request {
 	constructor(axios: AxiosInstance, vueAxios: VueAxios, config: AxiosRequestConfig = {}) {
 		this.Axios = axios
 		this.VueAxios = vueAxios
-		this.config = config
+		this.config = {...config}
 	}
 
 	unauthenticate() {
-		this.config.authenticate = false
-		return this
+		const instance = this.newInstance()
+		instance.config.authenticate = false
+		return instance
 	}
 
 	authenticate() {
-		this.config.authenticate = true
-		return this
+		const instance = this.newInstance()
+		instance.config.authenticate = true
+		return instance
+	}
+
+	private newInstance() {
+		return new this.constructor(this.Axios, this.VueAxios, this.config)
 	}
 
 	private shouldAuthenticate(config) {
@@ -62,15 +69,15 @@ export default class Request {
 		}
 
 		if (config instanceof Promise) {
-			return ResponsePromise.transform(
+			return ResponsePromise.transform<T>(
 				config.then(config => this.Axios(config))
 			)
 		} else {
-			return ResponsePromise.transform(this.Axios(config))
+			return ResponsePromise.transform<T>(this.Axios(config))
 		}
 	}
 
-	delete(url: string, config?: AxiosRequestConfig): AxiosPromise {
+	delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'delete',
 			url,
@@ -78,7 +85,7 @@ export default class Request {
 		})
 	}
 
-	get<T>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
+	get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'get',
 			url,
@@ -86,7 +93,7 @@ export default class Request {
 		})
 	}
 
-	head(url: string, config?: AxiosRequestConfig): AxiosPromise {
+	head<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'head',
 			url,
@@ -94,7 +101,7 @@ export default class Request {
 		})
 	}
 
-	patch<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'patch',
 			url,
@@ -103,7 +110,7 @@ export default class Request {
 		})
 	}
 
-	post<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'post',
 			url,
@@ -112,7 +119,7 @@ export default class Request {
 		})
 	}
 
-	put<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'put',
 			url,
