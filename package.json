@@ -1,6 +1,6 @@
 {
   "name":            "@asmadsen/vue-axios",
-  "version":         "0.0.9",
+  "version":         "0.0.20",
   "description":     "Vue wrapper for Axios with error catching and authentication",
   "main":            "dist/index.common.js",
   "types":           "types/index.d.ts",
