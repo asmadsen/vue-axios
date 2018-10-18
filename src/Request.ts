@@ -78,7 +78,7 @@ export default class Request {
 		})
 	}
 
-	get<T>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
+	get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'get',
 			url,
@@ -94,7 +94,7 @@ export default class Request {
 		})
 	}
 
-	patch<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	patch<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'patch',
 			url,
@@ -103,7 +103,7 @@ export default class Request {
 		})
 	}
 
-	post<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	post<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'post',
 			url,
@@ -112,7 +112,7 @@ export default class Request {
 		})
 	}
 
-	put<T>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
+	put<T = any>(url: string, data?: any, config?: AxiosRequestConfig): AxiosPromise<T> {
 		return this.request({
 			method: 'put',
 			url,
